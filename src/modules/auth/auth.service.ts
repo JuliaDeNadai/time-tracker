@@ -18,8 +18,14 @@ export class AuthService {
     return null;
   }
 
+  validateToken(token: string) {
+    return this.jwtService.verify(token, {
+        secret : process.env.JWT_SECRET_KEY
+    });
+  } 
+
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
