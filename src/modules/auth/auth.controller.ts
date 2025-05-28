@@ -1,7 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
-import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -9,7 +7,6 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('')
-  //@UseGuards(LocalAuthGuard)
   async signIn(@Body() signInDto: Record<string, any>) {
 
     //return signInDto
