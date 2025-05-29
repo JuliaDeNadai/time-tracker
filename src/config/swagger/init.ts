@@ -4,6 +4,7 @@ import { INestApplication } from '@nestjs/common';
 
 export function setupSwagger(app: INestApplication): void {
     const options = new DocumentBuilder()
+        .addBearerAuth()
         .setTitle('Time-Tracker')
         .setDescription('API to help autonomous workers to track their work time')
         .setVersion('1.0')
