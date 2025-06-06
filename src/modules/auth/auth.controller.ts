@@ -8,9 +8,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('')
   async signIn(@Body() signInDto: Record<string, any>) {
-
-    //return signInDto
-    let user = await this.authService.validateUser(signInDto.username, signInDto.password)
+    let user = await this.authService.validateUser(signInDto.email, signInDto.password)
 
     if(user) 
       return this.authService.login(user);
