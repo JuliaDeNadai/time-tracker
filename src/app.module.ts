@@ -9,15 +9,18 @@ import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServicesModule } from './modules/services/services.module';
 import { ServicesController } from './modules/services/services.controller';
+import { CompaniesModule } from './modules/companies/companies.module';
+import { CompaniesController } from './modules/companies/companies.controller';
 
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.MONGO_URL || 'mongodb://url:1234' ),
     UsersModule,
     AuthModule,
-    ServicesModule
+    ServicesModule,
+    CompaniesModule
   ],
-  controllers: [UsersController, ServicesController],
+  controllers: [UsersController, ServicesController, CompaniesController],
   providers: [ 
     {
       provide: APP_GUARD,

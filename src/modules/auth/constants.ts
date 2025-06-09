@@ -3,5 +3,6 @@ export const jwtConstants = {
   };
 
   export const publicRoutes = [
-    '/auth'
+    '/auth',
+    '/users'
   ]
