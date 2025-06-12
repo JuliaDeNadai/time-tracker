@@ -25,6 +25,9 @@ export class UsersService {
   async create(user: CreateUserDto){
     const salt = process.env.SALT_OF_ROUNDS || ''
     user.password = await bcrypt.hash(user.password, parseInt(salt) ) || 'random'
+
+    let newUser = new this.userModel(user)
+    return newUser.save()
   }
     
     
