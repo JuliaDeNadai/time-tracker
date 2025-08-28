@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { TimeEntriesService } from './time-entries.service';
+import { CreateTimeEntryDTO } from './dto/create-time-entry.dto';
 
-@Controller('time-entries')
+@Controller('time-entries/')
 export class TimeEntriesController {
     constructor(
       private readonly timeEntriesService: TimeEntriesService,
@@ -14,10 +15,16 @@ export class TimeEntriesController {
     return await this.timeEntriesService.findAll()
   }
 
-  /* @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('')
-  async create(@Body() name: string): Promise<any>{
-    return await this.timeEntriesService.create(name)
-  } */
+  async create(@Body() timeEntry: CreateTimeEntryDTO): Promise<any>{
+    return await this.timeEntriesService.create(timeEntry)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  closeJourney(@Param('id') id: string) {
+    return this.timeEntriesService.closeJourney(id);
+  }
 
 }

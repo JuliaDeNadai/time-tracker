@@ -1,33 +1,36 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { now, Document } from 'mongoose';
+import { User } from '../users/users.schema';
+import { Company } from '../companies/companies.schema';
+import { Service } from '../services/services.schema';
 
-@Schema()
+@Schema({ timestamps: true, collection: 'timeEntries' })
 export class TimeEntry extends Document {
-  @Prop()
-  user: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+  user: User;
 
-  @Prop()
-  company: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true })
+  company: Company;
 
-  @Prop()
-  service: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true })
+  service: Service;
 
   @Prop()
   date: string;
 
-  @Prop()
-  clock_in: string;
+  @Prop({ type: Date, required: true, default: now() })
+  clock_in: Date;
 
-  @Prop()
-  clock_oute: string;
+  @Prop({ type: Date, required: false, default: null })
+  clock_out: string;
 
-  @Prop()
+  @Prop({ default: null })
   total_hours: string;
 
-  @Prop()
+  @Prop({ default: null })
   total_amount: string;
 
-  @Prop()
+  @Prop({ default: null })
   details: string;
 }
 
