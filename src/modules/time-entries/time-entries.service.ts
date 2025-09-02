@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, now } from 'mongoose';
 import { TimeEntry } from './time-entries.schema';
@@ -8,7 +8,7 @@ import { CreateTimeEntryDTO } from './dto/create-time-entry.dto';
 @Injectable()
 export class TimeEntriesService {
   constructor(
-    @InjectModel('Services') private readonly serviceModel: Model<TimeEntry>,
+    @InjectModel('TimeEntry') private readonly serviceModel: Model<TimeEntry>,
   ) {}
     
   /* async findOne(name: string): Promise<TimeEntry | null> {
@@ -29,7 +29,7 @@ export class TimeEntriesService {
     const existingEntry = await this.serviceModel.findById(timeEntryId);
 
     if (!existingEntry) {
-      throw new NotFoundException('Time entry not found');
+      throw new NotFoundException('Prestação de serviço não encontrada.');
     }
 
     const now = new Date();
@@ -45,7 +45,8 @@ export class TimeEntriesService {
       {
         clock_out: now,
         total_hours: roundedTotalHours,
-        total_amount: existingEntry.user.value_hour * roundedTotalHours
+        total_amount: existingEntry.user.value_hour * roundedTotalHours,
+        active: false
       },
       { new: true },
     );

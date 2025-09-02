@@ -4,7 +4,8 @@ import { User } from '../users/users.schema';
 import { Company } from '../companies/companies.schema';
 import { Service } from '../services/services.schema';
 
-@Schema({ timestamps: true, collection: 'timeEntries' })
+@Schema({ timestamps: true, collection: 'time-entries' })
+
 export class TimeEntry extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user: User;
@@ -32,6 +33,17 @@ export class TimeEntry extends Document {
 
   @Prop({ default: null })
   details: string;
+
+  @Prop({ default: true })
+  active: boolean;
 }
 
-export const TimeEntriesSchema = SchemaFactory.createForClass(TimeEntry);
+export const TimeEntrySchema = SchemaFactory.createForClass(TimeEntry);
+
+TimeEntrySchema.index(
+  { user: 1, company: 1, service: 1, active: 1 },
+  { 
+    unique: true,
+    partialFilterExpression: { active: true }
+  },
+);

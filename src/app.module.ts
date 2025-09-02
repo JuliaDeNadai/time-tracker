@@ -12,6 +12,7 @@ import { ServicesController } from './modules/services/services.controller';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { CompaniesController } from './modules/companies/companies.controller';
 import { TimeEntriesModule } from './modules/time-entries/time-entries.module';
+import { TimeEntriesController } from './modules/time-entries/time-entries.controller';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { TimeEntriesModule } from './modules/time-entries/time-entries.module';
     CompaniesModule,
     TimeEntriesModule
   ],
-  controllers: [UsersController, ServicesController, CompaniesController],
+  controllers: [UsersController, ServicesController, CompaniesController, TimeEntriesController],
   providers: [ 
     {
       provide: APP_GUARD,

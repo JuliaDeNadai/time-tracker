@@ -1,16 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateTimeEntryDTO {
 
+    @IsNotEmpty({ message: 'Id do serviço é obrigatório'})
     @ApiProperty()
-    serviceId: string;
+    service: string;
 
+    @IsNotEmpty({ message: 'Id do usuário é obrigatório'})
     @ApiProperty()
-    userId: string;
+    user: string;
 
+    @IsNotEmpty({ message: 'Id da contratante é obrigatório'})
     @ApiProperty()
-    companyId: string;
+    company: string;
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
+    @IsOptional()
     details?: string;
 }
