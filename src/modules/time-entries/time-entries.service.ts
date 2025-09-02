@@ -17,7 +17,11 @@ export class TimeEntriesService {
   } */
 
   async findAll(): Promise<TimeEntry[]> {
-    return await this.serviceModel.find().exec()
+    return await this.serviceModel.find()
+      .populate('user', 'name email value_hour')
+      .populate('service', 'name')  
+      .populate('company', 'name')
+      .exec()
   }
 
   async create(timeEntry: CreateTimeEntryDTO){
@@ -26,7 +30,7 @@ export class TimeEntriesService {
   }
 
   async closeJourney(timeEntryId: string){
-    const existingEntry = await this.serviceModel.findById(timeEntryId);
+    const existingEntry = await this.serviceModel.findById(timeEntryId).populate('user');
 
     if (!existingEntry) {
       throw new NotFoundException('Prestação de serviço não encontrada.');

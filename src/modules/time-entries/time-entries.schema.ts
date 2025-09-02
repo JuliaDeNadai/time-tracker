@@ -10,10 +10,10 @@ export class TimeEntry extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user: User;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Companies', required: true })
   company: Company;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Services', required: true })
   service: Service;
 
   @Prop()
@@ -47,3 +47,14 @@ TimeEntrySchema.index(
     partialFilterExpression: { active: true }
   },
 );
+
+TimeEntrySchema.set('toJSON', {
+  transform: (doc, ret) => {
+    ret.createdAt = new Date(ret.createdAt).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    ret.updatedAt = new Date(ret.updatedAt).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    ret.clock_in = new Date(ret.clock_in).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    ret.clock_out = new Date(ret.clock_out).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    
+    return ret;
+  },
+});
