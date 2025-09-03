@@ -16,7 +16,7 @@ export class User extends Document {
   password: string;
 
   @Prop()
-  value_hour: string;
+  value_hour: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
