@@ -13,6 +13,8 @@ import { CompaniesModule } from './modules/companies/companies.module';
 import { CompaniesController } from './modules/companies/companies.controller';
 import { TimeEntriesModule } from './modules/time-entries/time-entries.module';
 import { TimeEntriesController } from './modules/time-entries/time-entries.controller';
+import { ReportsModule } from './modules/reports/reports.module';
+import { ReportsController } from './modules/reports/reports.controller';
 
 @Module({
   imports: [
@@ -21,9 +23,10 @@ import { TimeEntriesController } from './modules/time-entries/time-entries.contr
     AuthModule,
     ServicesModule,
     CompaniesModule,
-    TimeEntriesModule
+    TimeEntriesModule,
+    ReportsModule
   ],
-  controllers: [UsersController, ServicesController, CompaniesController, TimeEntriesController],
+  controllers: [UsersController, ServicesController, CompaniesController, TimeEntriesController, ReportsController],
   providers: [ 
     {
       provide: APP_GUARD,
