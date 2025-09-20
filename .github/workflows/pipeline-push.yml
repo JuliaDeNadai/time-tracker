@@ -11,5 +11,5 @@ jobs:
           node-version: 22.
       - name: Install Dependencies and execute tests
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run test
