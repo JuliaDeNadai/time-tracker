@@ -31,4 +31,6 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: timeTracker
+          s3_bucket: time-tracker-code
+          s3_key: lambda/deployment.zip
           zip_file: deployment.zip
