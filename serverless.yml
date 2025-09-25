@@ -1,0 +1,28 @@
+service: time-tracker-api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ${env:AWS_REGION}
+  stage: prod
+  memorySize: 256
+  timeout: 10
+  environment:
+    NODE_ENV: production
+
+functions:
+  api:
+    handler: dist/handler.main
+    events:
+      - httpApi:
+          path: /users
+          method: ANY
+      - httpApi:
+          path: /time-entries
+          method: ANY
+      - httpApi:
+          path: /{proxy+}
+          method: ANY   # catch-all para outras rotas
+
+plugins:
+  - serverless-offline
