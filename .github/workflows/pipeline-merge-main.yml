@@ -33,4 +33,3 @@ jobs:
           function_name: timeTracker
           s3_bucket: time-tracker-code
           s3_key: lambda/deployment.zip
-          zip_file: deployment.zip
