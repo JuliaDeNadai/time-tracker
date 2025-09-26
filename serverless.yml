@@ -7,6 +7,8 @@ provider:
   runtime: nodejs18.x
   region: ${env:AWS_REGION}
   stage: prod
+  deploymentBucket:
+    name: time-tracker-code
   memorySize: 256
   timeout: 10
   environment:
