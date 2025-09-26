@@ -14,7 +14,6 @@ provider:
   timeout: 10
   environment:
     NODE_ENV: production
-    MONGO_URL: ${env:MONGO_URL}    
 
 functions:
   api:
