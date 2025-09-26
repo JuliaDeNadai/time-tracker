@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import serverlessExpress from '@vendia/serverless-express';
-import { Context, Handler } from 'aws-lambda';
+import { Handler, Context, APIGatewayProxyEvent } from "aws-lambda";
 import express from "express";
 
 import { AppModule } from './src/app.module';
@@ -9,7 +9,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { MongoExceptionFilter } from 'src/config/exceptions/mongo-exception-filter.exception';
 import { setupSwagger } from 'src/config/swagger/init';
 
-let cachedServer: Handler;
+let cachedServer: ReturnType<typeof serverlessExpress>;
 
 async function bootstrap() {
   if (!cachedServer) {
@@ -18,20 +18,18 @@ async function bootstrap() {
       AppModule,
       new ExpressAdapter(expressApp),
     );
+
     nestApp.useGlobalPipes(
-    new ValidationPipe({
-        whitelist: true, 
-        forbidNonWhitelisted: true, 
-        transform: true, 
-    }),
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
     );
 
     nestApp.useGlobalFilters(new MongoExceptionFilter());
-    
     setupSwagger(nestApp);
-
     nestApp.enableCors();
-
     await nestApp.init();
 
     cachedServer = serverlessExpress({ app: expressApp });
@@ -40,8 +38,7 @@ async function bootstrap() {
   return cachedServer;
 }
 
-export const handler = async (event: any, context: Context, callback: any) => {
+export const handler: Handler = async (event: APIGatewayProxyEvent, context: Context) => {
   const server = await bootstrap();
-
-  return server(event, context, callback);
+  return server(event, context);
 };
