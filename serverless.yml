@@ -17,7 +17,7 @@ provider:
 
 functions:
   api:
-    handler: dist/handler.js
+    handler: dist/handler.handler
     events:
       - httpApi:
           path: /users
