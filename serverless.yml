@@ -19,16 +19,7 @@ provider:
 functions:
   api:
     handler: dist/handler.handler
-    events:
-      - httpApi:
-          path: /users
-          method: ANY
-      - httpApi:
-          path: /time-entries
-          method: ANY
-      - httpApi:
-          path: /{proxy+}
-          method: ANY   # catch-all para outras rotas
+    url: true
 
 plugins:
   - serverless-offline
