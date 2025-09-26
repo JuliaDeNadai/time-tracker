@@ -1,5 +1,7 @@
 service: time-tracker-api
 
+frameworkVersion: "~4.19.1"
+
 provider:
   name: aws
   runtime: nodejs18.x
