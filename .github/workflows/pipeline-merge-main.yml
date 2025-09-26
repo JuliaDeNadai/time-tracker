@@ -21,7 +21,7 @@ jobs:
       run: npm run build
 
     - name: Install Serverless
-      run: npm install -g serverless
+      run: npm install -g serverless@3
 
     - name: Deploy Lambda + API Gateway
       env:
