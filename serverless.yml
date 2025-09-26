@@ -19,7 +19,7 @@ functions:
   api:
     handler: dist/handler.handler
     events:
-      - httpApi:
+      - http:
           path: /users
           method: POST
           authorizer:
