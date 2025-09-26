@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import serverlessExpress from '@vendia/serverless-express';
 import { Context, Handler } from 'aws-lambda';
-import * as express from "express";
+import express from "express";
 
 import { AppModule } from './src/app.module';
 import { ValidationPipe } from '@nestjs/common';
