@@ -6,6 +6,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: ${env:AWS_REGION}
+  role: arn:aws:iam::556479867163:role/role-for-time-tracker
   stage: prod
   deploymentBucket:
     name: time-tracker-code-bucket
