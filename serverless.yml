@@ -21,7 +21,10 @@ functions:
     events:
       - httpApi:
           path: /users
-          method: ANY
+          method: POST
+          authorizer:
+            name: authLambda
+            type: token
       - httpApi:
           path: /time-entries
           method: ANY
