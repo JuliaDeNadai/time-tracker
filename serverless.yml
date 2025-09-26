@@ -8,7 +8,7 @@ provider:
   region: ${env:AWS_REGION}
   stage: prod
   deploymentBucket:
-    name: time-tracker-code
+    name: time-tracker-code-bucket
   memorySize: 256
   timeout: 10
   environment:
