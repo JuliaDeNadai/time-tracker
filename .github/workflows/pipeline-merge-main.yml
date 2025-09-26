@@ -29,4 +29,5 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
         MONGO_URI: ${{ secrets.MONGO_URL }}
+        LAMBDA_URL: ${{ secrets.LAMBDA_URL}}
       run: sls deploy --stage prod
