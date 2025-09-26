@@ -18,6 +18,7 @@ async function bootstrap() {
       AppModule,
       new ExpressAdapter(expressApp),
     );
+    console.log('Server created');
 
     nestApp.useGlobalPipes(
       new ValidationPipe({
@@ -29,6 +30,7 @@ async function bootstrap() {
 
     nestApp.useGlobalFilters(new MongoExceptionFilter());
     setupSwagger(nestApp);
+    console.log('Swagger created');
     nestApp.enableCors();
     await nestApp.init();
 
