@@ -38,10 +38,10 @@ async function bootstrap() {
   return cachedServer;
 }
 
-const RATE_LIMIT = 2;
-const cache = new Map<string, { count: number; reset: number }>();
+/* const RATE_LIMIT = 2;
+const cache = new Map<string, { count: number; reset: number }>(); */
 export const handler: Handler = async (event: APIGatewayProxyEvent, context: Context) => {
-  try{
+  /* try{
     const ip = event.requestContext?.http?.sourceIp || 'unknown';
     const now = Date.now();
     
@@ -63,7 +63,7 @@ export const handler: Handler = async (event: APIGatewayProxyEvent, context: Con
   } catch(err){
       console.log(err)
       return { statusCode: 500, body: 'Error occurred' };
-  }
+  } */
   
   const server = await bootstrap();
   return server(event, context);
