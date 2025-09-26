@@ -19,12 +19,9 @@ functions:
   api:
     handler: dist/handler.handler
     events:
-      - http:
+      - httpApi:
           path: /users
-          method: POST
-          authorizer:
-            name: authLambda
-            type: token
+          method: ANY
       - httpApi:
           path: /time-entries
           method: ANY
