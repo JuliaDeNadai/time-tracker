@@ -15,6 +15,7 @@ provider:
   environment:
     NODE_ENV: production
     MONGO_URI: ${env:MONGO_URI}
+    LAMBDA_URL: https://${self:service}-${self:provider.stage}.lambda-url.aws-region.on.aws/
 
 functions:
   api:
