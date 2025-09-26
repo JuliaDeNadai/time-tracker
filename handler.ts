@@ -18,7 +18,6 @@ async function bootstrap() {
       AppModule,
       new ExpressAdapter(expressApp),
     );
-    console.log('Server created');
 
     nestApp.useGlobalPipes(
       new ValidationPipe({
@@ -30,7 +29,6 @@ async function bootstrap() {
 
     nestApp.useGlobalFilters(new MongoExceptionFilter());
     setupSwagger(nestApp);
-    console.log('Swagger created');
     nestApp.enableCors();
     await nestApp.init();
 
@@ -40,33 +38,7 @@ async function bootstrap() {
   return cachedServer;
 }
 
-/* const RATE_LIMIT = 2;
-const cache = new Map<string, { count: number; reset: number }>(); */
 export const handler: Handler = async (event: APIGatewayProxyEvent, context: Context) => {
-  /* try{
-    const ip = event.requestContext?.http?.sourceIp || 'unknown';
-    const now = Date.now();
-    
-    if (!cache.has(ip)) {
-      cache.set(ip, { count: 1, reset: now + 60_000 });
-    } else {
-      const entry = cache.get(ip)!;
-      if (now > entry.reset) {
-        entry.count = 1;
-        entry.reset = now + 60_000;
-      } else {
-        entry.count += 1;
-        if (entry.count > RATE_LIMIT) {
-          return { statusCode: 429, body: 'Too many requests' };
-        }
-      }
-    }
-    
-  } catch(err){
-      console.log(err)
-      return { statusCode: 500, body: 'Error occurred' };
-  } */
-  
   const server = await bootstrap();
   return server(event, context);
 };
