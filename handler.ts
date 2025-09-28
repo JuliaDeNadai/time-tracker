@@ -11,7 +11,7 @@ import { setupSwagger } from 'src/config/swagger/init';
 
 let invocationCount = 0;
 let currentMinute = new Date().getUTCMinutes();
-const LIMIT_PER_MINUTE = process.env.LIMIT_PER_MINUTE || 10;
+const LIMIT_PER_MINUTE: number = Number(process.env.LIMIT_PER_MINUTE ?? 10);
 
 let cachedServer: ReturnType<typeof serverlessExpress>;
 
