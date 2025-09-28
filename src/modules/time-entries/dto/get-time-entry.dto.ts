@@ -1,5 +1,5 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsInt, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class GetTimeEntryDTO {
 
@@ -8,11 +8,13 @@ export class GetTimeEntryDTO {
     @IsString({ message: 'companyId deve ser uma string' })
     companyId?: string;
 
-    @ApiPropertyOptional({ description: 'Ano do filtro (ex: 2025)' })
+    @ApiProperty({ description: 'Ano do filtro (ex: 2025)', required: true })
     @IsNumberString()
+    @IsNotEmpty()
     year?: number;
 
-    @ApiPropertyOptional({ description: 'Mês do filtro (ex: 9 para setembro)' })
+    @ApiProperty({ description: 'Mês do filtro (ex: 9 para setembro)', required: true  })
     @IsNumberString()
+    @IsNotEmpty()
     month?: number;
 }

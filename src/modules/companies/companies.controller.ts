@@ -1,8 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { CreateCompanyDTO } from './dto/create-company.dto';
 
 @Controller('companies')
+@ApiBearerAuth()
 export class CompaniesController {
     constructor(
         private readonly companyService: CompanyService,
@@ -17,7 +20,7 @@ export class CompaniesController {
   
     @UseGuards(JwtAuthGuard)
     @Post('')
-    async create(@Body() body: { name: string }, @Req() req: any): Promise<any>{
+    async create(@Body() body: CreateCompanyDTO, @Req() req: any): Promise<any>{
       const { name } = body
       const user = req?.decodedData?.userId
       return await this.companyService.create({name, user})

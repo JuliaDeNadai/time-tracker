@@ -3,8 +3,10 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { TimeEntriesService } from './time-entries.service';
 import { CreateTimeEntryDTO } from './dto/create-time-entry.dto';
 import { GetTimeEntryDTO } from './dto/get-time-entry.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('time-entries/')
+@ApiBearerAuth()
 export class TimeEntriesController {
     constructor(
       private readonly timeEntriesService: TimeEntriesService,
@@ -22,8 +24,9 @@ export class TimeEntriesController {
 
   @UseGuards(JwtAuthGuard)
   @Post('')
-  async create(@Body() timeEntry: CreateTimeEntryDTO): Promise<any>{
-    return await this.timeEntriesService.create(timeEntry)
+  async create(@Body() timeEntry: CreateTimeEntryDTO, @Req() req: any): Promise<any>{
+    const user = req?.decodedData?.userId
+    return await this.timeEntriesService.create({...timeEntry, user})
   }
 
   @UseGuards(JwtAuthGuard)

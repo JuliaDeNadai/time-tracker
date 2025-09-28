@@ -54,7 +54,7 @@ export class TimeEntriesService {
       .exec()
   }
 
-  async create(timeEntry: CreateTimeEntryDTO){
+  async create(timeEntry: CreateTimeEntryDTO & { user: string }){
     let newTimeEntry = new this.serviceModel(timeEntry)
     return newTimeEntry.save()
   }

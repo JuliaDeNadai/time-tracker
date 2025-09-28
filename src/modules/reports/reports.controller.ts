@@ -5,8 +5,10 @@ import { ReportsService } from './reports.service';
 import { Response } from 'express';
 import { GetTimeEntryDTO } from '../time-entries/dto/get-time-entry.dto';
 import { TimeEntry } from '../time-entries/time-entries.schema';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('/reports')
+@ApiBearerAuth()
 export class ReportsController {
     constructor(
         private readonly timeEntryService: TimeEntriesService,
