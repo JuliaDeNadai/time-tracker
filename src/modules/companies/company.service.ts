@@ -21,7 +21,7 @@ export class CompanyService {
 
     async findAll(filters: FilterOptions): Promise<Company[]> {
         const query = { user: new Types.ObjectId(filters.userId) }
-        return await this.companyModel.find(query).exec()
+        return await this.companyModel.find(query).populate('user', 'name email').exec()
     }
 
     async create(company: { name: string, user: string }){

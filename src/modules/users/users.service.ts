@@ -17,13 +17,13 @@ export class UsersService {
   ) {}
     
   async findOne(email: string): Promise<User | null> {
-    const user = await this.userModel.findOne({ email }).exec()
+    const user = await this.userModel.findOne({ email }, 'name email value_hour').exec()
     return user
   }
 
   async findAll(filters: FilterOptions): Promise<User[]> {
     const query = { _id: new Types.ObjectId(filters.userId) }
-    return await this.userModel.find(query).exec()
+    return await this.userModel.find(query, 'name email value_hour').exec()
   }
 
   async create(user: CreateUserDto){
