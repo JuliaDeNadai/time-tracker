@@ -14,7 +14,7 @@ provider:
   timeout: 10
   environment:
     NODE_ENV: production
-    MONGO_URI: ${env:MONGO_URI}
+    MONGO_URL: ${env:MONGO_URL}
     LAMBDA_URL: ${env:LAMBDA_URL}
 
 functions:
