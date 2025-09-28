@@ -8,8 +8,8 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('')
-  async signIn(@Body() signInDto: SignInDto) {
-    let user = await this.authService.validateUser(signInDto.email, signInDto.password)
+  async signIn(@Body() login: SignInDto) {
+    let user = await this.authService.validateUser(login.email, login.password)
 
     if(user) 
       return this.authService.login(user);
