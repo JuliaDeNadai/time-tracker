@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ServicesService } from './services.service';
 
@@ -10,14 +10,17 @@ export class ServicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('')
-  async getAll(): Promise<any>{
-    return await this.serviceService.findAll()
+  async getAll(@Req() req: any): Promise<any>{
+    const userId = req?.decodedData?.userId
+    return await this.serviceService.findAll({userId})
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('')
-  async create(@Body() name: string): Promise<any>{
-    return await this.serviceService.create(name)
+  async create(@Body() body: { name: string}, @Req() req: any): Promise<any>{
+    const { name } = body
+    const user = req?.decodedData?.userId
+    return await this.serviceService.create({name, user})
   }
 
 }

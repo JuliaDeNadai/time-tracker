@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import dotenv from 'dotenv'; 
 import { Service } from './services.schema';
 
+interface FilterOptions {
+  userId: string;
+}
 
 @Injectable()
 export class ServicesService {
@@ -17,12 +20,16 @@ export class ServicesService {
     return user
   }
 
-  async findAll(): Promise<Service[]> {
-    return await this.serviceModel.find().exec()
+  async findAll(filters: FilterOptions): Promise<Service[]> {
+    const query = { user: new Types.ObjectId(filters.userId) }
+    return await this.serviceModel
+      .find(query)
+      .populate('user', 'name email')
+      .exec()
   }
 
-  async create(name: string){
-    let newService = new this.serviceModel(name)
+  async create(service: { name: string, user: string }){
+    let newService = new this.serviceModel(service)
     return newService.save()
   }
     

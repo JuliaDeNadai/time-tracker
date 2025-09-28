@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from './users.schema';
 import { CreateUserDto } from './Dtos/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import dotenv from 'dotenv'; 
 
+interface FilterOptions {
+  userId: string;
+}
 
 @Injectable()
 export class UsersService {
@@ -18,8 +21,9 @@ export class UsersService {
     return user
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.userModel.find().exec()
+  async findAll(filters: FilterOptions): Promise<User[]> {
+    const query = { _id: new Types.ObjectId(filters.userId) }
+    return await this.userModel.find(query).exec()
   }
 
   async create(user: CreateUserDto){

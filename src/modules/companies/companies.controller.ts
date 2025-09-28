@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -10,14 +10,17 @@ export class CompaniesController {
   
     @UseGuards(JwtAuthGuard)
     @Get('')
-    async getAll(): Promise<any>{
-      return await this.companyService.findAll()
+    async getAll(@Req() req: any): Promise<any>{
+      const userId = req?.decodedData?.userId
+      return await this.companyService.findAll({userId})
     }
   
     @UseGuards(JwtAuthGuard)
     @Post('')
-    async create(@Body() name: string): Promise<any>{
-      return await this.companyService.create(name)
+    async create(@Body() body: { name: string }, @Req() req: any): Promise<any>{
+      const { name } = body
+      const user = req?.decodedData?.userId
+      return await this.companyService.create({name, user})
     }
 
     @Delete(':id')
