@@ -13,11 +13,14 @@ let cachedServer: ReturnType<typeof serverlessExpress>;
 
 async function bootstrap() {
   if (!cachedServer) {
+    console.log('nao tem cached server')
     const expressApp = express();
+    console.log('express')
     const nestApp = await NestFactory.create(
       AppModule,
       new ExpressAdapter(expressApp),
     );
+    console.log('nest app')
 
     nestApp.useGlobalPipes(
       new ValidationPipe({
@@ -29,10 +32,13 @@ async function bootstrap() {
 
     nestApp.useGlobalFilters(new MongoExceptionFilter());
     setupSwagger(nestApp);
+    console.log('setup swagger')
     nestApp.enableCors();
     await nestApp.init();
+    console.log('nest app init')
 
     cachedServer = serverlessExpress({ app: expressApp });
+    console.log('cacheou o server')
   }
 
   return cachedServer;
@@ -40,5 +46,6 @@ async function bootstrap() {
 
 export const handler: Handler = async (event: APIGatewayProxyEvent, context: Context) => {
   const server = await bootstrap();
+  console.log('Iniciou')
   return server(event, context);
 };
