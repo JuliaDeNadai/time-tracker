@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Company } from './companies.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+
+interface FilterOptions {
+  userId: string;
+}
 
 @Injectable()
 export class CompanyService {
@@ -15,12 +19,13 @@ export class CompanyService {
         return company
     }
 
-    async findAll(): Promise<Company[]> {
-        return await this.companyModel.find().exec()
+    async findAll(filters: FilterOptions): Promise<Company[]> {
+        const query = { user: new Types.ObjectId(filters.userId) }
+        return await this.companyModel.find(query).exec()
     }
 
-    async create(name: string){
-        let newCompany = new this.companyModel(name)
+    async create(company: { name: string, user: string }){
+        let newCompany = new this.companyModel(company)
         return newCompany.save()
     }
 
