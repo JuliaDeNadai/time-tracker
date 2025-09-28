@@ -1,34 +1,75 @@
 import { Injectable } from "@nestjs/common";
 import * as ExcelJS from 'exceljs';
 import { writeFileSync } from 'fs';
+import { TimeEntry } from "../time-entries/time-entries.schema";
 
 
 @Injectable()
 export class ReportsService {
 
-  async gererateTimeEntriesReport(data: any){
+  formatHours(total: number){
+    const totalHourDecimal = total; // ex: 5.5
+    const hours = Math.floor(totalHourDecimal);
+    const minutes = Math.round((totalHourDecimal - hours) * 60);
+
+    return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}`;
+  }
+
+  async generateTimeEntriesReport(data: TimeEntry[], filter: any){
     const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Relatorio - 08_2025 - Adebrail');
+    const sheet = workbook.addWorksheet(`Relatorio - ${filter.month}_${filter.year} - ${filter.email}`);
     
-    sheet.addRow([`08/2025 - ${data[0].user.name}`]); 
-
-
-    sheet.addRow(['Empresa', 'Serviço', 'Início', 'Fim', 'Total/Horas', 'Valor Total']);
+    sheet.addRow([`${filter.month}/${filter.year} - ${data[0].user.name}`]); 
+    sheet.addRow(['', '', '', '', '', '']);
+    const cabecalho = sheet.addRow(['','Empresa', 'Serviço', 'Início', 'Fim', 'Total/Horas', 'Valor Total']);
+    cabecalho.eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: 'FF006400' } }; 
+    });
 
     let totalAmount = 0, totalHour = 0
-    for (const item of data) {
+    let prevCompany = ''
+    for (const [index, item] of data.entries()) {
+
+      if(index > 0 && prevCompany !== item.company._id){
+
+        let formattedHours = this.formatHours(totalHour)
+        const totalRow = sheet.addRow(['','Total', '', '', '', new String(formattedHours), totalAmount]);
+        totalRow.eachCell((cell) => {
+          cell.font = { bold: true, color: { argb: 'FF006400' } }; 
+        });
+        totalRow.getCell(7).numFmt = '"R$"#,##0.00;[Red]\-"R$"#,##0.00';
+        sheet.addRow(['','', '', '', '', '', '']);
+        totalAmount = 0
+        totalHour = 0
+      }
+
       totalAmount += parseFloat(item.total_amount)
       totalHour += parseFloat(item.total_hours)
-      let row = sheet.addRow([item.company.name, item.service.name, item.clock_in, item.clock_out, parseFloat(item.total_hours), parseFloat(item.total_amount)]);
+
+      let formattedHour = this.formatHours(parseFloat(item.total_hours))
+      let row = sheet.addRow([
+        '', 
+        item.company.name, 
+        item.service.name, 
+        new Date(item.clock_in).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }), 
+        new Date(item.clock_out).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }), 
+        new String(formattedHour), 
+        parseFloat(item.total_amount)
+      ]);
       
       row.getCell(3).numFmt = 'dd/mm/yyyy hh:mm';
       row.getCell(4).numFmt = 'dd/mm/yyyy hh:mm';
+      row.getCell(7).numFmt = '"R$"#,##0.00;[Red]\-"R$"#,##0.00';
+
+      prevCompany = item.company._id as string
     }
 
-    const totalRow = sheet.addRow(['Total', '', '', '', totalHour, totalAmount]);
+    let formattedHours = this.formatHours(totalHour)
+    const totalRow = sheet.addRow(['', 'Total', '', '', '', new String(formattedHours), totalAmount]);
     totalRow.eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: 'FF006400' } }; // negrito e verde escuro
+      cell.font = { bold: true, color: { argb: 'FF006400' } }; 
     });
+    totalRow.getCell(7).numFmt = '"R$"#,##0.00;[Red]\-"R$"#,##0.00';
 
     // Ajustar largura das colunas
     sheet.columns = [

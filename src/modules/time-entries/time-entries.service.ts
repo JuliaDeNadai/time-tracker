@@ -1,9 +1,16 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, now } from 'mongoose';
+import { Model, now, Types } from 'mongoose';
 import { TimeEntry } from './time-entries.schema';
 import { CreateTimeEntryDTO } from './dto/create-time-entry.dto';
+import { startOfMonth, endOfMonth } from 'date-fns';
 
+interface FilterOptions {
+  userId: string;
+  year?: number;
+  month?: number;
+  companyId?: string;
+}
 
 @Injectable()
 export class TimeEntriesService {
@@ -16,11 +23,34 @@ export class TimeEntriesService {
     return user
   } */
 
-  async findAll(): Promise<TimeEntry[]> {
-    return await this.serviceModel.find()
+  getQueryByFilters(filters: FilterOptions){
+    const query: any = { user: new Types.ObjectId(filters.userId) }
+
+    if(filters.year && filters.month){
+      const start = startOfMonth(new Date(filters.year, filters.month - 1, 1));
+      const end = endOfMonth(new Date(filters.year, filters.month - 1, 1));
+
+      query.clock_in = { $gte: start, $lte: end };
+      query.clock_out = { $gte: start, $lte: end };
+    }
+
+    if (filters.companyId) {
+      query.company = new Types.ObjectId(filters.companyId);
+    }
+
+    return query
+  }
+
+  async findAll(filters: FilterOptions): Promise<TimeEntry[]> {
+
+    const query = this.getQueryByFilters(filters)
+
+    return await this.serviceModel
+      .find(query)
       .populate('user', 'name email value_hour')
       .populate('service', 'name')  
       .populate('company', 'name')
+      .sort({ company: 1, 'clock_in': 1 })
       .exec()
   }
 
