@@ -17,7 +17,7 @@ export class UsersService {
   ) {}
     
   async findOne(email: string): Promise<User | null> {
-    const user = await this.userModel.findOne({ email }, 'name email value_hour').exec()
+    const user = await this.userModel.findOne({ email }).exec()
     return user
   }
 
