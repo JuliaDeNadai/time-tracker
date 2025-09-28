@@ -9,6 +9,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { MongoExceptionFilter } from 'src/config/exceptions/mongo-exception-filter.exception';
 import { setupSwagger } from 'src/config/swagger/init';
 
+let invocationCount = 0;
+let currentMinute = new Date().getUTCMinutes();
+const LIMIT_PER_MINUTE = process.env.LIMIT_PER_MINUTE;
+
 let cachedServer: ReturnType<typeof serverlessExpress>;
 
 async function bootstrap() {
@@ -45,6 +49,26 @@ async function bootstrap() {
 }
 
 export const handler: Handler = async (event: APIGatewayProxyEvent, context: Context) => {
+    const now = new Date();
+  const minute = now.getUTCMinutes();
+
+  // ✅ Se mudou de minuto, resetamos o contador
+  if (minute !== currentMinute) {
+    currentMinute = minute;
+    invocationCount = 0;
+  }
+
+  invocationCount++;
+
+  // ✅ Verifica se o limite foi atingido
+  if (invocationCount > LIMIT_PER_MINUTE) {
+    console.warn(`Limite de ${LIMIT_PER_MINUTE} ativações por minuto excedido.`);
+    return {
+      statusCode: 429,
+      body: JSON.stringify({ message: 'Limite de ativações da Lambda por minuto excedido.' }),
+    };
+  }
+
   const server = await bootstrap();
   console.log('Iniciou')
   return server(event, context);

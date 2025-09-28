@@ -30,4 +30,5 @@ jobs:
         AWS_REGION: ${{ secrets.AWS_REGION }}
         MONGO_URL: ${{ secrets.MONGO_URL }}
         LAMBDA_URL: ${{ secrets.LAMBDA_URL}}
+        LIMIT_PER_MINUTE: ${{ secrets.LIMIT_PER_MINUTE }}
       run: sls deploy --stage prod

@@ -16,6 +16,7 @@ provider:
     NODE_ENV: production
     MONGO_URL: ${env:MONGO_URL}
     LAMBDA_URL: ${env:LAMBDA_URL}
+    LIMIT_PER_MINUTE: ${env:LIMIT_PER_MINUTE}
 
 functions:
   api:
