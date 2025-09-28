@@ -1,0 +1,483 @@
+{
+  "name": "time-tracker",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "auth copy",
+      "filename": "auth copy.bru",
+      "seq": 12,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "https://lpjjvijj5uw4lmpp3rzbzg2t2a0kehfw.lambda-url.sa-east-1.on.aws/auth",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"email\": \"tcc@gmail.com\",\n  \"password\": \"Tcc123\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "auth",
+      "filename": "auth.bru",
+      "seq": 3,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/auth",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"email\": \"tcc@gmail.com\",\n  \"password\": \"Tcc123\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "GET companies",
+      "filename": "GET companies.bru",
+      "seq": 14,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/companies",
+        "method": "GET",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRjY0BnbWFpbC5jb20iLCJ1c2VySWQiOiI2OGFlNGM1M2RmNzFhMTZiMzk0MDRkOTciLCJpYXQiOjE3NTkwNzM0NzcsImV4cCI6MTc2MTY2NTQ3N30.MN6Y1LHkWWquHUXUulQMSWpIImNoSqlCECmYGMOleVs"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "GET time entries",
+      "filename": "GET time entries.bru",
+      "seq": 7,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/time-entries?year=2025&month=9",
+        "method": "GET",
+        "headers": [],
+        "params": [
+          {
+            "name": "year",
+            "value": "2025",
+            "type": "query",
+            "enabled": true
+          },
+          {
+            "name": "month",
+            "value": "9",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRjY0BnbWFpbC5jb20iLCJ1c2VySWQiOiI2OGFlNGM1M2RmNzFhMTZiMzk0MDRkOTciLCJpYXQiOjE3NTkwNjU3MTgsImV4cCI6MTc2MTY1NzcxOH0.yB5l6zKbqXwlcqmi9lZyrMLoIBjPMTbA5_KvZv1UNaQ"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "GET users copy",
+      "filename": "GET users copy.bru",
+      "seq": 13,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/users",
+        "method": "GET",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NTY3NzE0NDYsImV4cCI6MTc1OTM2MzQ0Nn0.nx2B7y71jCrS43j8pWKRTOIL22G1zunIiL_fOkJlmjY"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "GET users",
+      "filename": "GET users.bru",
+      "seq": 1,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/users",
+        "method": "GET",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NTY3NzE0NDYsImV4cCI6MTc1OTM2MzQ0Nn0.nx2B7y71jCrS43j8pWKRTOIL22G1zunIiL_fOkJlmjY"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "GETservices",
+      "filename": "GETservices.bru",
+      "seq": 2,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/services",
+        "method": "GET",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRjY0BnbWFpbC5jb20iLCJ1c2VySWQiOiI2OGFlNGM1M2RmNzFhMTZiMzk0MDRkOTciLCJpYXQiOjE3NTkwNzM0NzcsImV4cCI6MTc2MTY2NTQ3N30.MN6Y1LHkWWquHUXUulQMSWpIImNoSqlCECmYGMOleVs"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "POST companies",
+      "filename": "POST companies.bru",
+      "seq": 9,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/companies",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n    \"name\": \"COREMAX\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NTY3NzE0NDYsImV4cCI6MTc1OTM2MzQ0Nn0.nx2B7y71jCrS43j8pWKRTOIL22G1zunIiL_fOkJlmjY"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "POST services",
+      "filename": "POST services.bru",
+      "seq": 5,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/services",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n    \"name\": \"Instalação ar condicionado\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NTY3NzE0NDYsImV4cCI6MTc1OTM2MzQ0Nn0.nx2B7y71jCrS43j8pWKRTOIL22G1zunIiL_fOkJlmjY"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "POST time entries copy",
+      "filename": "POST time entries copy.bru",
+      "seq": 8,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/time-entries",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"service\": \"68b634ccdc30ffa3701fafe0\",\n  \"user\": \"68ae4c53df71a16b39404d97\",\n  \"company\": \"68d942323f9e428533df6d43\",\n  \"details\": \"Manutencã diversa\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NTY3NzE0NDYsImV4cCI6MTc1OTM2MzQ0Nn0.nx2B7y71jCrS43j8pWKRTOIL22G1zunIiL_fOkJlmjY"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "POST user",
+      "filename": "POST user.bru",
+      "seq": 4,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/users",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n    \"name\": \"Example TCC\",\n    \"password\": \"Tcc123\",\n    \"email\": \"tccv2@gmail.com\",\n    \"value_hour\": \"100\"\n  }",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NDkyMDU5MzgsImV4cCI6MTc1MTc5NzkzOH0.ObHT2Ii7NDIBw9sbBrkh8mjOtKrtigz_O1umyZMZeek"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "PUT CLOSE time entry",
+      "filename": "PUT CLOSE time entry.bru",
+      "seq": 10,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/time-entries/68d94f9174e161dd901d5a7d",
+        "method": "PUT",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NTY3NzE0NDYsImV4cCI6MTc1OTM2MzQ0Nn0.nx2B7y71jCrS43j8pWKRTOIL22G1zunIiL_fOkJlmjY"
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "Reports/time-entries",
+      "filename": "Reports-time-entries.bru",
+      "seq": 10,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/reports/time-entries?year=2025&month=9",
+        "method": "GET",
+        "headers": [],
+        "params": [
+          {
+            "name": "year",
+            "value": "2025",
+            "type": "query",
+            "enabled": true
+          },
+          {
+            "name": "month",
+            "value": "9",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRjY0BnbWFpbC5jb20iLCJ1c2VySWQiOiI2OGFlNGM1M2RmNzFhMTZiMzk0MDRkOTciLCJpYXQiOjE3NTkwNjU3MTgsImV4cCI6MTc2MTY1NzcxOH0.yB5l6zKbqXwlcqmi9lZyrMLoIBjPMTbA5_KvZv1UNaQ"
+          }
+        }
+      }
+    }
+  ],
+  "environments": [],
+  "root": {
+    "request": {
+      "auth": {
+        "mode": "none"
+      }
+    },
+    "meta": {
+      "name": "time-tracker"
+    }
+  },
+  "brunoConfig": {
+    "version": "1",
+    "name": "time-tracker",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ],
+    "size": 0.004744529724121094,
+    "filesCount": 14
+  }
+}
