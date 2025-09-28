@@ -1,0 +1,26 @@
+service: time-tracker-api
+
+frameworkVersion: "~3.34.0"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ${env:AWS_REGION}
+  role: arn:aws:iam::556479867163:role/role-for-time-tracker
+  stage: prod
+  deploymentBucket:
+    name: time-tracker-code-bucket
+  memorySize: 256
+  timeout: 10
+  environment:
+    NODE_ENV: production
+    MONGO_URI: ${env:MONGO_URI}
+    LAMBDA_URL: ${env:LAMBDA_URL}
+
+functions:
+  api:
+    handler: dist/handler.handler
+    url: true
+
+plugins:
+  - serverless-offline

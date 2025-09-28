@@ -8,10 +8,18 @@ export function setupSwagger(app: INestApplication): void {
         .setTitle('Time-Tracker')
         .setDescription('API to help autonomous workers to track their work time')
         .setVersion('1.0')
-        .addServer('http://localhost:3000/', 'Local environment')
         .build();
 
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup('swagger', app, document);
+    SwaggerModule.setup('swagger', app, document, {
+    swaggerOptions: {
+      urls: [
+        {
+          url: process.env.LAMBDA_URL, 
+          name: 'Lambda URL',
+        },
+      ],
+    },
+  });
 
 }
