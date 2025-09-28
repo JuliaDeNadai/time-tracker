@@ -17,7 +17,8 @@ export class CompaniesController {
   
     @UseGuards(JwtAuthGuard)
     @Post('')
-    async create(@Body() name: string, @Req() req: any): Promise<any>{
+    async create(@Body() body: { name: string }, @Req() req: any): Promise<any>{
+      const { name } = body
       const user = req?.decodedData?.userId
       return await this.companyService.create({name, user})
     }

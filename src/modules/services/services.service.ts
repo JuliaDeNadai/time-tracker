@@ -22,7 +22,10 @@ export class ServicesService {
 
   async findAll(filters: FilterOptions): Promise<Service[]> {
     const query = { user: new Types.ObjectId(filters.userId) }
-    return await this.serviceModel.find(query).exec()
+    return await this.serviceModel
+      .find(query)
+      .populate('user', 'name email')
+      .exec()
   }
 
   async create(service: { name: string, user: string }){

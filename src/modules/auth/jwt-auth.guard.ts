@@ -14,7 +14,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate{
       const request = context.switchToHttp().getRequest();
       const { authorization }: any = request.headers;
 
-      if(publicRoutes.includes(request.url)) return true
+      if(publicRoutes[request.url]?.includes(request.method)) return true
 
       if (!authorization || authorization.trim() === '') {
         throw new UnauthorizedException('Please provide token');
