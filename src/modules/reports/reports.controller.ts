@@ -5,7 +5,7 @@ import { ReportsService } from './reports.service';
 import { Response } from 'express';
 import { GetTimeEntryDTO } from '../time-entries/dto/get-time-entry.dto';
 import { TimeEntry } from '../time-entries/time-entries.schema';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Controller('/reports')
 @ApiBearerAuth()
@@ -17,6 +17,11 @@ export class ReportsController {
   
     @UseGuards(JwtAuthGuard)
     @Get('/time-entries')
+    @ApiOperation({
+      summary: 'Exporta relatório de lançamentos de horas',
+      description:
+        'Gera um relatório em formato Excel (.xlsx) contendo as entradas de tempo do usuário com base nos filtros aplicados.',
+    })
     async timeEntries(
       @Query() filters: GetTimeEntryDTO,
       @Req() req: any,
