@@ -50,10 +50,21 @@ TimeEntrySchema.index(
 
 TimeEntrySchema.set('toJSON', {
   transform: (doc, ret) => {
-    ret.createdAt = new Date(ret.createdAt).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-    ret.updatedAt = new Date(ret.updatedAt).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-    ret.clock_in = new Date(ret.clock_in).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-    ret.clock_out = new Date(ret.clock_out).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    const formatDate = (date: any) =>
+      date ? new Date(date).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : null;
+
+    ret.createdAt = formatDate(ret.createdAt);
+    ret.updatedAt = formatDate(ret.updatedAt);
+    ret.clock_in = formatDate(ret.clock_in);
+    ret.clock_out = formatDate(ret.clock_out);
+
+    if (ret.total_hours !== undefined && ret.total_hours !== null) {
+      const totalHours = ret.total_hours;
+      const hours = Math.floor(totalHours);
+      const minutes = Math.floor((totalHours - hours) * 60);
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      ret.total_hours = `${pad(hours)}:${pad(minutes)}`;
+    }
     
     return ret;
   },
