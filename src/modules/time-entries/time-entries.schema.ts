@@ -19,11 +19,11 @@ export class TimeEntry extends Document {
   @Prop()
   date: string;
 
-  @Prop({ type: Date, required: true, default: now() })
+  @Prop({ type: Date, required: true, default: Date.now })
   clock_in: Date;
 
   @Prop({ type: Date, required: false, default: null })
-  clock_out: string;
+  clock_out: Date;
 
   @Prop({ default: null })
   total_hours: string;
