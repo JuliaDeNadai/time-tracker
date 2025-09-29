@@ -41,7 +41,13 @@ async function bootstrap() {
     await nestApp.init();
     console.log('nest app init')
 
-    cachedServer = serverlessExpress({ app: expressApp });
+    cachedServer = serverlessExpress({ 
+      app: expressApp, 
+      binaryMimeTypes: [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/octet-stream',
+      ]
+    });
     console.log('cacheou o server')
   }
 

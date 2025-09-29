@@ -30,22 +30,12 @@ export class ReportsController {
  
       const buffer = await this.reportsService.generateTimeEntriesReport(data, { ...filters, email })
 
-      /* res.setHeader(
+      res.setHeader(
         'Content-Type',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       ); 
       res.setHeader('Content-Disposition', `attachment; filename=relatorio-servicos-${filters.month}_${filters.year}.xlsx`);
 
-      res.send(buffer);*/
-
-      return {
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          'Content-Disposition': `attachment; filename=relatorio-servicos-${filters.month}_${filters.year}.xlsx`,
-        },
-        isBase64Encoded: true,
-        body: Buffer.from(buffer).toString('base64'),
-      };
+      res.send(buffer);
     }
 }
