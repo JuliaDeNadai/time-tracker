@@ -7,6 +7,7 @@ import { ServiceSchema } from '../services/services.schema';
 import { ReportsController } from './reports.controller';
 import { TimeEntriesService } from '../time-entries/time-entries.service';
 import { ReportsService } from './reports.service';
+import { UsersModule } from '../users/users.module';
 
 
 @Module({
@@ -17,6 +18,7 @@ import { ReportsService } from './reports.service';
           { name: 'Companies', schema: CompanySchema },
           { name: 'Services', schema: ServiceSchema }
         ]),
+        UsersModule,
       ],
       controllers: [ReportsController],
       providers: [TimeEntriesService, ReportsService],

@@ -1,8 +1,11 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpException, HttpStatus, NotFoundException, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
 import { UsersService } from './users.service';
-import { User } from './users.schema';
+import { UserRole } from './users.schema';
 import { CreateUserDto } from './Dtos/createUser.dto';
+import { UpdateUserRoleDto } from './Dtos/updateUserRole.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
@@ -28,7 +31,7 @@ export class UsersController {
     @Post('')
     @ApiOperation({
         summary: 'Criar usuário',
-        description: 'Criação de usuário para acesso a API.',
+        description: 'Criação de usuário para acesso a API. Todo usuário é criado com o perfil general.',
     })
     async create(@Body() user: CreateUserDto): Promise<any>{
 
@@ -36,5 +39,24 @@ export class UsersController {
         if(findUser) throw new HttpException('Email already in use', HttpStatus.CONFLICT);
 
         return await this.userService.create(user)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Roles(UserRole.ADMIN)
+    @Patch(':id/role')
+    @ApiOperation({
+        summary: 'Alterar perfil de usuário',
+        description: 'Altera o perfil (admin ou general) de um usuário. Disponível somente para admin, que não pode alterar o próprio perfil.',
+    })
+    async updateRole(@Param('id') id: string, @Body() dto: UpdateUserRoleDto, @Req() req: any): Promise<any>{
+        if (!Types.ObjectId.isValid(id)) throw new BadRequestException('Id de usuário inválido')
+
+        const requesterId = req?.decodedData?.userId
+        if (id === requesterId) throw new ForbiddenException('Admin não pode alterar o próprio perfil')
+
+        const updated = await this.userService.updateRole(id, dto.role)
+        if (!updated) throw new NotFoundException('Usuário não encontrado')
+
+        return updated
     }
 }

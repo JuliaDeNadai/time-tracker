@@ -57,6 +57,35 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Perfis de acesso
+
+Todo usuário tem um perfil (`role`): `admin` ou `general`.
+
+- Todo cadastro (`POST /users`) cria um usuário `general`. Enviar `role` no corpo retorna 400.
+- O token de `POST /auth` traz `role` no payload apenas para exibição. O perfil pode mudar enquanto o token ainda vale, então a fonte confiável é o `role` retornado por `GET /users`.
+- Somente o dono de uma jornada pode encerrá-la (`PUT /time-entries/:id`), inclusive quando quem chama é admin.
+- Somente admin pode alterar perfis, editar jornadas e gerar relatórios de outros usuários `general`.
+- No relatório, usuários `general` recebem a planilha sem a coluna "Valor Total".
+
+### Rotas novas e alteradas
+
+| Rota | Quem pode | Erros |
+| --- | --- | --- |
+| `PATCH /users/:id/role` (body `{ "role": "admin" \| "general" }`) | admin, exceto no próprio perfil | 400 id ou role inválidos, 403 sem permissão ou próprio perfil, 404 usuário não encontrado |
+| `PATCH /time-entries/:id` (body opcional: `clock_in`, `clock_out` em ISO 8601, `company`, `service`, `details`) | admin | 400 dados inválidos ou `clock_out` incoerente, 403 sem permissão, 404 jornada não encontrada, 409 jornada ativa duplicada |
+| `PUT /time-entries/:id` (encerrar jornada) | dono da jornada | 400 id inválido, 403 jornada de outro usuário, 409 jornada já encerrada |
+| `GET /reports/time-entries?userId=` | admin, para usuários `general`; sem `userId`, o próprio usuário | 403 sem permissão ou alvo admin, 404 usuário não encontrado |
+
+No `PATCH /time-entries/:id`, `total_hours` e `total_amount` são recalculados pelo servidor. As datas são recebidas em ISO 8601, mas a resposta devolve as datas formatadas em pt-BR.
+
+### Migração
+
+Antes de liberar a versão em cada ambiente, rode a migração de perfis. Ela define `general` para os usuários sem perfil e promove o usuário de `ADMIN_EMAIL` a admin. Sem esse passo, nenhum usuário é admin.
+
+```bash
+$ MONGO_URL=... ADMIN_EMAIL=admin@exemplo.com npm run migrate:roles
+```
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.

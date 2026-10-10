@@ -456,6 +456,126 @@
           }
         }
       }
+    },
+    {
+      "type": "http",
+      "name": "Reports/time-entries (userId)",
+      "filename": "Reports-time-entries-userId.bru",
+      "seq": 15,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/reports/time-entries?year=2026&month=10&userId=68ae4c53df71a16b39404d97",
+        "method": "GET",
+        "headers": [],
+        "params": [
+          {
+            "name": "year",
+            "value": "2026",
+            "type": "query",
+            "enabled": true
+          },
+          {
+            "name": "month",
+            "value": "10",
+            "type": "query",
+            "enabled": true
+          },
+          {
+            "name": "userId",
+            "value": "68ae4c53df71a16b39404d97",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "Somente admin pode informar userId, e apenas de usuários general. Sem userId, gera o relatório do próprio usuário.",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": ""
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "PATCH users role",
+      "filename": "PATCH users role.bru",
+      "seq": 16,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/users/68ae4c53df71a16b39404d97/role",
+        "method": "PATCH",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"role\": \"admin\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "Somente admin. role: \"admin\" ou \"general\". Admin não pode alterar o próprio perfil (403).",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": ""
+          }
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "PATCH time entry",
+      "filename": "PATCH time entry.bru",
+      "seq": 17,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:3000/time-entries/68d94f9174e161dd901d5a7d",
+        "method": "PATCH",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"clock_in\": \"2026-10-10T08:00:00-03:00\",\n  \"clock_out\": \"2026-10-10T17:00:00-03:00\",\n  \"details\": \"Ajuste de horário\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "Somente admin. Todos os campos são opcionais: clock_in e clock_out em ISO 8601, company e service (ids), details. total_hours e total_amount são recalculados pelo servidor.",
+        "auth": {
+          "mode": "bearer",
+          "bearer": {
+            "token": ""
+          }
+        }
+      }
     }
   ],
   "environments": [],
@@ -478,6 +598,6 @@
       ".git"
     ],
     "size": 0.004744529724121094,
-    "filesCount": 14
+    "filesCount": 17
   }
 }

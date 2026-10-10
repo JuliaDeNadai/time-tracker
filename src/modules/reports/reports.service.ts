@@ -16,60 +16,64 @@ export class ReportsService {
   }
 
   async generateTimeEntriesReport(data: TimeEntry[], filter: any){
+    const showValues = filter.showValues === true
+    const currencyFormat = '"R$"#,##0.00;[Red]\-"R$"#,##0.00'
+    const totalStyle = { bold: true, color: { argb: 'FF006400' } }
+
+    const withValue = (cells: any[], value: any) => showValues ? [...cells, value] : cells
+
+    const addTotalRow = (hours: number, amount: number) => {
+      const totalRow = sheet.addRow(withValue(['', 'Total', '', '', '', new String(this.formatHours(hours))], amount));
+      totalRow.eachCell((cell) => {
+        cell.font = totalStyle; 
+      });
+      if (showValues) totalRow.getCell(7).numFmt = currencyFormat;
+    }
+
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet(`Relatorio - ${filter.month}_${filter.year} - ${filter.email}`);
     
-    sheet.addRow([`${filter.month}/${filter.year} - ${data[0].user.name}`]); 
+    sheet.addRow([`${filter.month}/${filter.year} - ${filter.name ?? ''}`]); 
     sheet.addRow(['', '', '', '', '', '']);
-    const cabecalho = sheet.addRow(['','Empresa', 'Serviço', 'Início', 'Fim', 'Total/Horas', 'Valor Total']);
+    const cabecalho = sheet.addRow(withValue(['','Empresa', 'Serviço', 'Início', 'Fim', 'Total/Horas'], 'Valor Total'));
     cabecalho.eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: 'FF006400' } }; 
+      cell.font = totalStyle; 
     });
 
     let totalAmount = 0, totalHour = 0
     let prevCompany = ''
     for (const [index, item] of data.entries()) {
+      const companyId = item.company?._id?.toString() ?? ''
 
-      if(index > 0 && prevCompany !== item.company._id){
-
-        let formattedHours = this.formatHours(totalHour)
-        const totalRow = sheet.addRow(['','Total', '', '', '', new String(formattedHours), totalAmount]);
-        totalRow.eachCell((cell) => {
-          cell.font = { bold: true, color: { argb: 'FF006400' } }; 
-        });
-        totalRow.getCell(7).numFmt = '"R$"#,##0.00;[Red]\-"R$"#,##0.00';
+      if(index > 0 && prevCompany !== companyId){
+        addTotalRow(totalHour, totalAmount)
         sheet.addRow(['','', '', '', '', '', '']);
         totalAmount = 0
         totalHour = 0
       }
 
-      totalAmount += parseFloat(item.total_amount)
-      totalHour += parseFloat(item.total_hours)
+      const amount = parseFloat(item.total_amount) || 0
+      const hours = parseFloat(item.total_hours) || 0
+      totalAmount += amount
+      totalHour += hours
 
-      let formattedHour = this.formatHours(parseFloat(item.total_hours))
-      let row = sheet.addRow([
+      let row = sheet.addRow(withValue([
         '', 
-        item.company.name, 
-        item.service.name, 
+        item.company?.name ?? '', 
+        item.service?.name ?? '', 
         new Date(item.clock_in).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }), 
-        new Date(item.clock_out).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }), 
-        new String(formattedHour), 
-        parseFloat(item.total_amount)
-      ]);
+        item.clock_out ? new Date(item.clock_out).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : 'Em aberto', 
+        new String(this.formatHours(hours)), 
+      ], amount));
       
       row.getCell(3).numFmt = 'dd/mm/yyyy hh:mm';
       row.getCell(4).numFmt = 'dd/mm/yyyy hh:mm';
-      row.getCell(7).numFmt = '"R$"#,##0.00;[Red]\-"R$"#,##0.00';
+      if (showValues) row.getCell(7).numFmt = currencyFormat;
 
-      prevCompany = item.company._id as string
+      prevCompany = companyId
     }
 
-    let formattedHours = this.formatHours(totalHour)
-    const totalRow = sheet.addRow(['', 'Total', '', '', '', new String(formattedHours), totalAmount]);
-    totalRow.eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: 'FF006400' } }; 
-    });
-    totalRow.getCell(7).numFmt = '"R$"#,##0.00;[Red]\-"R$"#,##0.00';
+    addTotalRow(totalHour, totalAmount)
 
     // Ajustar largura das colunas
     sheet.columns = [
@@ -78,7 +82,7 @@ export class ReportsService {
       { width: 15 }, // Início
       { width: 15 }, // Fim
       { width: 15 }, // Total/Horas
-      { width: 15 }, // Valor Total
+      ...(showValues ? [{ width: 15 }] : []), // Valor Total
     ];
 
     return await workbook.xlsx.writeBuffer();
