@@ -6,6 +6,7 @@ import { UsersService } from './users.service';
 import { UserRole } from './users.schema';
 import { CreateUserDto } from './Dtos/createUser.dto';
 import { UpdateUserRoleDto } from './Dtos/updateUserRole.dto';
+import { UpdateUserValueHourDto } from './Dtos/updateUserValueHour.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
@@ -26,6 +27,33 @@ export class UsersController {
         const userId = req?.decodedData?.userId
         const isAdmin = await this.userService.isAdmin(userId)
         return await this.userService.findAll({userId}, isAdmin)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Roles(UserRole.ADMIN)
+    @Get('all')
+    @ApiOperation({
+        summary: 'Todos os usuários',
+        description: 'Lista todos os usuários com perfil e valor/hora. Disponível somente para admin.',
+    })
+    async getEveryone(): Promise<any>{
+        return await this.userService.findEveryone()
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Roles(UserRole.ADMIN)
+    @Patch(':id/value-hour')
+    @ApiOperation({
+        summary: 'Alterar valor/hora de usuário',
+        description: 'Altera o valor/hora de um usuário. Disponível somente para admin. Vale para as jornadas encerradas a partir da alteração; registros já encerrados não são recalculados.',
+    })
+    async updateValueHour(@Param('id') id: string, @Body() dto: UpdateUserValueHourDto): Promise<any>{
+        if (!Types.ObjectId.isValid(id)) throw new BadRequestException('Id de usuário inválido')
+
+        const updated = await this.userService.updateValueHour(id, dto.value_hour)
+        if (!updated) throw new NotFoundException('Usuário não encontrado')
+
+        return updated
     }
 
     @UseGuards(JwtAuthGuard)

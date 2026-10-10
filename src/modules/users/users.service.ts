@@ -53,6 +53,16 @@ export class UsersService {
     return { requester, target, isAdmin }
   }
 
+  async findEveryone(): Promise<User[]> {
+    return await this.userModel.find({}, 'name email value_hour role').sort({ name: 1 }).exec()
+  }
+
+  async updateValueHour(id: string, valueHour: number): Promise<User | null> {
+    return await this.userModel
+      .findByIdAndUpdate(id, { value_hour: valueHour }, { new: true, projection: 'name email value_hour role' })
+      .exec()
+  }
+
   async findGeneral(): Promise<User[]> {
     return await this.userModel.find({ role: UserRole.GENERAL }, 'name email role').sort({ name: 1 }).exec()
   }
