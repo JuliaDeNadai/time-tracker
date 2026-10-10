@@ -6,6 +6,7 @@ import { UsersModule } from './modules/users/users.module';
 import { UsersController } from './modules/users/users.controller';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
+import { RolesGuard } from './modules/auth/roles.guard';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServicesModule } from './modules/services/services.module';
 import { ServicesController } from './modules/services/services.controller';
@@ -31,6 +32,10 @@ import { ReportsController } from './modules/reports/reports.controller';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

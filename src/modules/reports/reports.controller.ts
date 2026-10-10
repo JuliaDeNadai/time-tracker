@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { TimeEntriesService } from '../time-entries/time-entries.service';
+import { UsersService } from '../users/users.service';
 import { ReportsService } from './reports.service';
 import { Response } from 'express';
-import { GetTimeEntryDTO } from '../time-entries/dto/get-time-entry.dto';
+import { GetReportDTO } from './dto/get-report.dto';
 import { TimeEntry } from '../time-entries/time-entries.schema';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
@@ -12,7 +13,8 @@ import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 export class ReportsController {
     constructor(
         private readonly timeEntryService: TimeEntriesService,
-        private readonly reportsService: ReportsService
+        private readonly reportsService: ReportsService,
+        private readonly usersService: UsersService
       ) {}
   
     @UseGuards(JwtAuthGuard)
@@ -20,20 +22,25 @@ export class ReportsController {
     @ApiOperation({
       summary: 'Exporta relatório de lançamentos de horas',
       description:
-        'Gera um relatório em formato Excel (.xlsx) contendo as entradas de tempo do usuário com base nos filtros aplicados.',
+        'Gera um relatório em formato Excel (.xlsx) contendo as entradas de tempo com base nos filtros aplicados. Usuários general geram somente o próprio relatório, sem a coluna "Valor Total". Admin pode informar userId de um usuário general.',
     })
     async timeEntries(
-      @Query() filters: GetTimeEntryDTO,
+      @Query() filters: GetReportDTO,
       @Req() req: any,
       @Res() res: Response
     ): Promise<any>{
 
-      const userId = req?.decodedData?.userId
-      const email = req?.decodedData?.email
+      const { userId: requestedUserId, ...timeFilters } = filters
+      const { target, isAdmin } = await this.usersService.resolveTarget(req?.decodedData?.userId, requestedUserId)
 
-      const data: TimeEntry[] = await this.timeEntryService.findAll({...filters, userId})
+      const data: TimeEntry[] = await this.timeEntryService.findAll({ ...timeFilters, userId: String(target._id) }, isAdmin)
  
-      const buffer = await this.reportsService.generateTimeEntriesReport(data, { ...filters, email })
+      const buffer = await this.reportsService.generateTimeEntriesReport(data, {
+        ...timeFilters,
+        email: target.email,
+        name: target.name,
+        showValues: isAdmin,
+      })
 
       res.setHeader(
         'Content-Type',

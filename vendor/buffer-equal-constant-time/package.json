@@ -1,0 +1,7 @@
+{
+  "name": "buffer-equal-constant-time",
+  "version": "1.0.1",
+  "description": "Drop-in replacement for buffer-equal-constant-time that works on Node versions without SlowBuffer",
+  "main": "index.js",
+  "license": "BSD-3-Clause"
+}
