@@ -22,15 +22,15 @@ export class TimeEntriesController {
   @Get('')
   @ApiOperation({
     summary: 'Jornadas de trabalho',
-    description: 'Retorna todas as entradas de jornada de trabalho do usuário com base nos filtros aplicados. Valores em reais (valor/hora e valor total) só são retornados para admin.',
+    description: 'Retorna todas as entradas de jornada de trabalho do usuário com base nos filtros aplicados. Usuários general veem somente as próprias entradas; admin pode informar userId de um usuário general. Valores em reais (valor/hora e valor total) só são retornados para admin.',
   })
   async getAll(
     @Query() filters: GetTimeEntryDTO,
     @Req() req: any
   ): Promise<any>{
-    const userId = req?.decodedData?.userId
-    const isAdmin = await this.usersService.isAdmin(userId)
-    return await this.timeEntriesService.findAll({...filters, userId}, isAdmin)
+    const { userId: requestedUserId, ...timeFilters } = filters
+    const { target, isAdmin } = await this.usersService.resolveTarget(req?.decodedData?.userId, requestedUserId)
+    return await this.timeEntriesService.findAll({ ...timeFilters, userId: String(target._id) }, isAdmin)
   }
 
   @UseGuards(JwtAuthGuard)

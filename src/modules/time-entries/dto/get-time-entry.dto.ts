@@ -1,7 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsMongoId, IsNotEmpty, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class GetTimeEntryDTO {
+
+    @ApiPropertyOptional({ description: 'Id do usuário (somente admin, para usuários general). Padrão: o próprio usuário.' })
+    @IsOptional()
+    @IsMongoId({ message: 'userId deve ser um id válido' })
+    userId?: string;
 
     @ApiPropertyOptional({ description: 'Id da empresa contratante' })
     @IsOptional()

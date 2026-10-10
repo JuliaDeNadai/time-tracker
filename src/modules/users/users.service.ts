@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserRole } from './users.schema';
@@ -29,6 +29,32 @@ export class UsersService {
   async isAdmin(userId: string): Promise<boolean> {
     const user = await this.findById(userId)
     return user?.role === UserRole.ADMIN
+  }
+
+  /**
+   * Resolve de quem são os dados consultados: general só acessa a si mesmo;
+   * admin acessa a si mesmo e usuários general.
+   */
+  async resolveTarget(requesterId: string, requestedUserId?: string): Promise<{ requester: User, target: User, isAdmin: boolean }> {
+    const requester = await this.findById(requesterId)
+    if (!requester) throw new ForbiddenException('Usuário não encontrado')
+
+    const isAdmin = requester.role === UserRole.ADMIN
+    if (!requestedUserId || requestedUserId === requesterId) return { requester, target: requester, isAdmin }
+
+    if (!isAdmin) throw new ForbiddenException('Você só pode acessar os seus próprios dados')
+
+    const target = await this.findById(requestedUserId)
+    if (!target) throw new NotFoundException('Usuário não encontrado')
+    if (target.role !== UserRole.GENERAL) {
+      throw new ForbiddenException('Admin só pode acessar dados de usuários com perfil general')
+    }
+
+    return { requester, target, isAdmin }
+  }
+
+  async findGeneral(): Promise<User[]> {
+    return await this.userModel.find({ role: UserRole.GENERAL }, 'name email role').sort({ name: 1 }).exec()
   }
 
   async findAll(filters: FilterOptions, includeValues: boolean): Promise<User[]> {

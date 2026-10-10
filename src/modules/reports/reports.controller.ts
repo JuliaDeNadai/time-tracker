@@ -1,8 +1,7 @@
-import { Controller, ForbiddenException, Get, NotFoundException, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { TimeEntriesService } from '../time-entries/time-entries.service';
 import { UsersService } from '../users/users.service';
-import { UserRole } from '../users/users.schema';
 import { ReportsService } from './reports.service';
 import { Response } from 'express';
 import { GetReportDTO } from './dto/get-report.dto';
@@ -31,27 +30,10 @@ export class ReportsController {
       @Res() res: Response
     ): Promise<any>{
 
-      const requesterId = req?.decodedData?.userId
-      const requester = await this.usersService.findById(requesterId)
-      if (!requester) throw new ForbiddenException('Usuário não encontrado')
-
-      const isAdmin = requester.role === UserRole.ADMIN
       const { userId: requestedUserId, ...timeFilters } = filters
-      const targetUserId = requestedUserId ?? requesterId
+      const { target, isAdmin } = await this.usersService.resolveTarget(req?.decodedData?.userId, requestedUserId)
 
-      let target = requester
-      if (targetUserId !== requesterId) {
-        if (!isAdmin) throw new ForbiddenException('Você só pode gerar relatórios para si mesmo')
-
-        const targetUser = await this.usersService.findById(targetUserId)
-        if (!targetUser) throw new NotFoundException('Usuário não encontrado')
-        if (targetUser.role !== UserRole.GENERAL) {
-          throw new ForbiddenException('Admin só pode gerar relatórios de usuários com perfil general')
-        }
-        target = targetUser
-      }
-
-      const data: TimeEntry[] = await this.timeEntryService.findAll({ ...timeFilters, userId: targetUserId }, isAdmin)
+      const data: TimeEntry[] = await this.timeEntryService.findAll({ ...timeFilters, userId: String(target._id) }, isAdmin)
  
       const buffer = await this.reportsService.generateTimeEntriesReport(data, {
         ...timeFilters,

@@ -29,6 +29,17 @@ export class UsersController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Roles(UserRole.ADMIN)
+    @Get('general')
+    @ApiOperation({
+        summary: 'Usuários general',
+        description: 'Lista os usuários com perfil general (sem valores em reais). Disponível somente para admin.',
+    })
+    async getGeneral(): Promise<any>{
+        return await this.userService.findGeneral()
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Post('')
     @ApiOperation({
         summary: 'Criar usuário',
