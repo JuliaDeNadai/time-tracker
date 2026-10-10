@@ -6,6 +6,7 @@ import { TimeEntrySchema } from './time-entries.schema';
 import { UserSchema } from '../users/users.schema';
 import { CompanySchema } from '../companies/companies.schema';
 import { ServiceSchema } from '../services/services.schema';
+import { UsersModule } from '../users/users.module';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { ServiceSchema } from '../services/services.schema';
         { name: 'Companies', schema: CompanySchema },
         { name: 'Services', schema: ServiceSchema }
       ]),
+      UsersModule,
     ],
   controllers: [TimeEntriesController],
   providers: [TimeEntriesService],

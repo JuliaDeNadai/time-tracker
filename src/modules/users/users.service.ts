@@ -26,9 +26,15 @@ export class UsersService {
     return await this.userModel.findById(id, 'name email value_hour role').exec()
   }
 
-  async findAll(filters: FilterOptions): Promise<User[]> {
+  async isAdmin(userId: string): Promise<boolean> {
+    const user = await this.findById(userId)
+    return user?.role === UserRole.ADMIN
+  }
+
+  async findAll(filters: FilterOptions, includeValues: boolean): Promise<User[]> {
     const query = { _id: new Types.ObjectId(filters.userId) }
-    return await this.userModel.find(query, 'name email value_hour role').exec()
+    const projection = includeValues ? 'name email value_hour role' : 'name email role'
+    return await this.userModel.find(query, projection).exec()
   }
 
   async create(user: CreateUserDto){
@@ -36,7 +42,8 @@ export class UsersService {
     user.password = await bcrypt.hash(user.password, parseInt(salt) ) || 'random'
 
     let newUser = new this.userModel({ ...user, role: UserRole.GENERAL })
-    return newUser.save()
+    const saved = await newUser.save()
+    return { _id: saved._id, name: saved.name, email: saved.email, role: saved.role }
   }
 
   async updateRole(id: string, role: UserRole): Promise<User | null> {

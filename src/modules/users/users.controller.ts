@@ -24,7 +24,8 @@ export class UsersController {
     })
     async getAll(@Req() req: any): Promise<any>{
         const userId = req?.decodedData?.userId
-        return await this.userService.findAll({userId})
+        const isAdmin = await this.userService.isAdmin(userId)
+        return await this.userService.findAll({userId}, isAdmin)
     }
 
     @UseGuards(JwtAuthGuard)

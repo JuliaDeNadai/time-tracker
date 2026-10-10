@@ -65,7 +65,8 @@ Todo usuário tem um perfil (`role`): `admin` ou `general`.
 - O token de `POST /auth` traz `role` no payload apenas para exibição. O perfil pode mudar enquanto o token ainda vale, então a fonte confiável é o `role` retornado por `GET /users`.
 - Somente o dono de uma jornada pode encerrá-la (`PUT /time-entries/:id`), inclusive quando quem chama é admin.
 - Somente admin pode alterar perfis, editar jornadas e gerar relatórios de outros usuários `general`.
-- No relatório, usuários `general` recebem a planilha sem a coluna "Valor Total".
+- Usuários `general` não recebem valores em reais: o relatório sai sem a coluna "Valor Total", e `GET /users` e `GET`, `POST` e `PUT` de `/time-entries` omitem `value_hour` e `total_amount`.
+- `POST /users` devolve apenas `_id`, `name`, `email` e `role`.
 
 ### Rotas novas e alteradas
 

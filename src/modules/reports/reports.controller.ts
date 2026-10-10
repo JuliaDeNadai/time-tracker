@@ -51,7 +51,7 @@ export class ReportsController {
         target = targetUser
       }
 
-      const data: TimeEntry[] = await this.timeEntryService.findAll({ ...timeFilters, userId: targetUserId })
+      const data: TimeEntry[] = await this.timeEntryService.findAll({ ...timeFilters, userId: targetUserId }, isAdmin)
  
       const buffer = await this.reportsService.generateTimeEntriesReport(data, {
         ...timeFilters,

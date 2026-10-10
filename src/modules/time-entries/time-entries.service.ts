@@ -42,22 +42,29 @@ export class TimeEntriesService {
     return query
   }
 
-  async findAll(filters: FilterOptions): Promise<TimeEntry[]> {
+  async findAll(filters: FilterOptions, includeValues: boolean): Promise<TimeEntry[]> {
 
     const query = this.getQueryByFilters(filters)
 
     return await this.serviceModel
-      .find(query)
-      .populate('user', 'name email value_hour')
+      .find(query, includeValues ? undefined : { total_amount: 0 })
+      .populate('user', includeValues ? 'name email value_hour' : 'name email')
       .populate('service', 'name')  
       .populate('company', 'name')
       .sort({ company: 1, 'clock_in': 1 })
       .exec()
   }
 
-  async create(timeEntry: CreateTimeEntryDTO & { user: string }){
+  hideValues(entry: TimeEntry, includeValues: boolean) {
+    if (includeValues) return entry
+    const { total_amount, ...rest } = entry.toJSON()
+    return rest
+  }
+
+  async create(timeEntry: CreateTimeEntryDTO & { user: string }, includeValues: boolean){
     let newTimeEntry = new this.serviceModel(timeEntry)
-    return newTimeEntry.save()
+    const saved = await newTimeEntry.save()
+    return this.hideValues(saved, includeValues)
   }
 
   calculateTotals(clockIn: Date, clockOut: Date, valueHour: number) {
@@ -87,7 +94,7 @@ export class TimeEntriesService {
     return existingEntry;
   }
 
-  async closeJourney(timeEntryId: string, userId: string){
+  async closeJourney(timeEntryId: string, userId: string, includeValues: boolean){
     const existingEntry = await this.findEntryOrFail(timeEntryId);
 
     if (existingEntry.user?._id?.toString() !== userId) {
@@ -107,7 +114,7 @@ export class TimeEntriesService {
         ...this.calculateTotals(existingEntry.clock_in, now, existingEntry.user.value_hour),
         active: false
       },
-      { new: true },
+      { new: true, projection: includeValues ? undefined : { total_amount: 0 } },
     );
 
     return updatedEntry;

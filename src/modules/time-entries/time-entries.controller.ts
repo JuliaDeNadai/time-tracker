@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post, Put, Query, Req, UseGuards }
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { UserRole } from '../users/users.schema';
+import { UsersService } from '../users/users.service';
 import { TimeEntriesService } from './time-entries.service';
 import { CreateTimeEntryDTO } from './dto/create-time-entry.dto';
 import { UpdateTimeEntryDTO } from './dto/update-time-entry.dto';
@@ -14,20 +15,22 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 export class TimeEntriesController {
     constructor(
       private readonly timeEntriesService: TimeEntriesService,
+      private readonly usersService: UsersService,
     ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('')
   @ApiOperation({
     summary: 'Jornadas de trabalho',
-    description: 'Retorna todas as entradas de jornada de trabalho do usuário com base nos filtros aplicados.',
+    description: 'Retorna todas as entradas de jornada de trabalho do usuário com base nos filtros aplicados. Valores em reais (valor/hora e valor total) só são retornados para admin.',
   })
   async getAll(
     @Query() filters: GetTimeEntryDTO,
     @Req() req: any
   ): Promise<any>{
     const userId = req?.decodedData?.userId
-    return await this.timeEntriesService.findAll({...filters, userId})
+    const isAdmin = await this.usersService.isAdmin(userId)
+    return await this.timeEntriesService.findAll({...filters, userId}, isAdmin)
   }
 
   @UseGuards(JwtAuthGuard)
@@ -38,18 +41,20 @@ export class TimeEntriesController {
   })
   async create(@Body() timeEntry: CreateTimeEntryDTO, @Req() req: any): Promise<any>{
     const user = req?.decodedData?.userId
-    return await this.timeEntriesService.create({...timeEntry, user})
+    const isAdmin = await this.usersService.isAdmin(user)
+    return await this.timeEntriesService.create({...timeEntry, user}, isAdmin)
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   @ApiOperation({
     summary: 'Encerramento da jornada de trabalho',
-    description: 'Encera uma jornada de trabalho em aberto, automaticamente realiza o cálculo de horas e valor total do serviço. Necessário fornecer o id da jornada de trabalho em aberto. Somente o dono da jornada pode encerrá-la.',
+    description: 'Encera uma jornada de trabalho em aberto, automaticamente realiza o cálculo de horas e valor total do serviço. Necessário fornecer o id da jornada de trabalho em aberto. Somente o dono da jornada pode encerrá-la. O valor total só é retornado para admin.',
   })
-  closeJourney(@Param('id') id: string, @Req() req: any) {
+  async closeJourney(@Param('id') id: string, @Req() req: any) {
     const userId = req?.decodedData?.userId
-    return this.timeEntriesService.closeJourney(id, userId);
+    const isAdmin = await this.usersService.isAdmin(userId)
+    return this.timeEntriesService.closeJourney(id, userId, isAdmin);
   }
 
   @UseGuards(JwtAuthGuard)
