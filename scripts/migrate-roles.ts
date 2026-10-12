@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import '../src/config/load-env';
 import mongoose from 'mongoose';
 
 async function run() {

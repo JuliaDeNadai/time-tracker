@@ -1,4 +1,4 @@
-require('dotenv').config()
+import './config/load-env';
 
 import { Module } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
@@ -17,9 +17,14 @@ import { TimeEntriesController } from './modules/time-entries/time-entries.contr
 import { ReportsModule } from './modules/reports/reports.module';
 import { ReportsController } from './modules/reports/reports.controller';
 
+const mongoUrl = process.env.MONGO_URL
+if (!mongoUrl) {
+  throw new Error('MONGO_URL não definido. Use npm run start:dev (banco dev) ou npm run start:dev:prod-db (banco prod).')
+}
+
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGO_URL || 'mongodb://url:1234' ),
+    MongooseModule.forRoot(mongoUrl),
     UsersModule,
     AuthModule,
     ServicesModule,
