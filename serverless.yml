@@ -1,6 +1,6 @@
 service: time-tracker-api
 
-frameworkVersion: "~3.34.0"
+frameworkVersion: "~3.40.0"
 
 provider:
   name: aws
