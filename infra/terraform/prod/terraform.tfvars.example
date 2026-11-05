@@ -1,0 +1,5 @@
+aws_region           = "sa-east-1"
+account_id           = "556479867163"
+lambda_function_name = "time-tracker-api-prod-api"
+budget_limit_usd     = "1"
+budget_email         = "seu-email@exemplo.com"
