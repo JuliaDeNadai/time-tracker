@@ -55,6 +55,18 @@ export class TimeEntriesService {
       .exec()
   }
 
+  async recalculateMissingAmounts(userId: string, valueHour: number) {
+    await this.serviceModel.updateMany(
+      {
+        user: new Types.ObjectId(userId),
+        active: false,
+        total_hours: { $ne: null },
+        total_amount: { $in: [null, '0', 0] },
+      },
+      [{ $set: { total_amount: { $toString: { $multiply: [{ $toDouble: '$total_hours' }, valueHour] } } } }],
+    )
+  }
+
   hideValues(entry: TimeEntry, includeValues: boolean) {
     if (includeValues) return entry
     const { total_amount, ...rest } = entry.toJSON()
@@ -67,7 +79,7 @@ export class TimeEntriesService {
     return this.hideValues(saved, includeValues)
   }
 
-  calculateTotals(clockIn: Date, clockOut: Date, valueHour: number) {
+  calculateTotals(clockIn: Date, clockOut: Date, valueHour: number | null) {
     const diffMs = clockOut.getTime() - clockIn.getTime();
 
     // Converte para horas (1 hora = 1000 * 60 * 60 ms)

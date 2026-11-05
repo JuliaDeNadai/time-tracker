@@ -71,7 +71,7 @@ export class UsersController {
     @Post('')
     @ApiOperation({
         summary: 'Criar usuário',
-        description: 'Criação de usuário para acesso a API. Todo usuário é criado com o perfil general.',
+        description: 'Criação de usuário para acesso a API. Todo usuário é criado com o perfil general e sem valor/hora, que é definido depois por um admin.',
     })
     async create(@Body() user: CreateUserDto): Promise<any>{
 

@@ -20,8 +20,8 @@ export class User extends Document {
   @Prop()
   password: string;
 
-  @Prop()
-  value_hour: number;
+  @Prop({ type: Number, default: null })
+  value_hour: number | null;
 
   @Prop({ type: String, enum: UserRole, default: UserRole.GENERAL })
   role: UserRole;

@@ -64,7 +64,7 @@ export class UsersService {
   }
 
   async findGeneral(): Promise<User[]> {
-    return await this.userModel.find({ role: UserRole.GENERAL }, 'name email role').sort({ name: 1 }).exec()
+    return await this.userModel.find({ role: UserRole.GENERAL }, 'name email value_hour role').sort({ name: 1 }).exec()
   }
 
   async findAll(filters: FilterOptions, includeValues: boolean): Promise<User[]> {
@@ -77,7 +77,7 @@ export class UsersService {
     const salt = process.env.SALT_OF_ROUNDS || ''
     user.password = await bcrypt.hash(user.password, parseInt(salt) ) || 'random'
 
-    let newUser = new this.userModel({ ...user, role: UserRole.GENERAL })
+    let newUser = new this.userModel({ ...user, value_hour: null, role: UserRole.GENERAL })
     const saved = await newUser.save()
     return { _id: saved._id, name: saved.name, email: saved.email, role: saved.role }
   }

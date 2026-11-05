@@ -4,7 +4,7 @@ frameworkVersion: "~3.34.0"
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs22.x
   region: ${env:AWS_REGION}
   role: arn:aws:iam::556479867163:role/role-for-time-tracker
   stage: prod
@@ -12,6 +12,7 @@ provider:
     name: time-tracker-code-bucket
   memorySize: 256
   timeout: 10
+  logRetentionInDays: 14
   environment:
     NODE_ENV: production
     MONGO_URL: ${env:MONGO_URL}
@@ -22,6 +23,7 @@ functions:
   api:
     handler: dist/handler.handler
     url: true
+    reservedConcurrency: 5
 
 plugins:
   - serverless-offline

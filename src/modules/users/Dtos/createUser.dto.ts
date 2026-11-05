@@ -19,10 +19,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty()
   password: string;
-
-  @IsString()
-  @MaxLength(3)
-  @IsNotEmpty()
-  @ApiProperty()
-  value_hour: string;
 }
