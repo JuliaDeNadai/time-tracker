@@ -19,6 +19,8 @@ provider:
     MONGO_URL: ${env:MONGO_URL}
     LAMBDA_URL: ${env:LAMBDA_URL}
     LIMIT_PER_MINUTE: ${env:LIMIT_PER_MINUTE}
+    JWT_SECRET_KEY: ${env:JWT_SECRET_KEY}
+    SALT_OF_ROUNDS: ${env:SALT_OF_ROUNDS}
 
 functions:
   api:
