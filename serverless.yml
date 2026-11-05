@@ -4,7 +4,8 @@ frameworkVersion: "~3.40.0"
 
 provider:
   name: aws
-  runtime: nodejs22.x
+  # Serverless v3 schema lists up to nodejs20.x; AWS Lambda also accepts nodejs22.x.
+  runtime: nodejs20.x
   region: ${env:AWS_REGION}
   role: arn:aws:iam::556479867163:role/role-for-time-tracker
   stage: prod
@@ -23,7 +24,8 @@ functions:
   api:
     handler: dist/handler.handler
     url: true
-    reservedConcurrency: 5
+    # reservedConcurrency omitted: account concurrency quota is low (must keep >=10 unreserved).
+    # Re-add after raising Lambda concurrency quota in Service Quotas if you want a cost ceiling.
 
 plugins:
   - serverless-offline
