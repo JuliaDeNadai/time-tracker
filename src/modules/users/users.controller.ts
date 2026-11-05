@@ -7,10 +7,11 @@ import { UserRole } from './users.schema';
 import { CreateUserDto } from './Dtos/createUser.dto';
 import { UpdateUserRoleDto } from './Dtos/updateUserRole.dto';
 import { UpdateUserValueHourDto } from './Dtos/updateUserValueHour.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
 @ApiTags('Users')
+@ApiSecurity('x-access-token')
 @ApiBearerAuth()
 export class UsersController {
     constructor(

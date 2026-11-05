@@ -1,11 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CreateCompanyDTO } from './dto/create-company.dto';
 
 @Controller('companies')
 @ApiTags('Companies')
+@ApiSecurity('x-access-token')
 @ApiBearerAuth()
 export class CompaniesController {
     constructor(

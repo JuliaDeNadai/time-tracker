@@ -7,10 +7,11 @@ import { TimeEntriesService } from './time-entries.service';
 import { CreateTimeEntryDTO } from './dto/create-time-entry.dto';
 import { UpdateTimeEntryDTO } from './dto/update-time-entry.dto';
 import { GetTimeEntryDTO } from './dto/get-time-entry.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('time-entries/')
 @ApiTags('Time Entries')
+@ApiSecurity('x-access-token')
 @ApiBearerAuth()
 export class TimeEntriesController {
     constructor(

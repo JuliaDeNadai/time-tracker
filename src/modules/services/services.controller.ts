@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ServicesService } from './services.service';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CreateServiceDTO } from './dto/create-service.dto';
 
 @Controller('services')
 @ApiTags('Services')
+@ApiSecurity('x-access-token')
 @ApiBearerAuth()
 export class ServicesController {
     constructor(

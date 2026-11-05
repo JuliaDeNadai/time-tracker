@@ -6,9 +6,10 @@ import { ReportsService } from './reports.service';
 import { Response } from 'express';
 import { GetReportDTO } from './dto/get-report.dto';
 import { TimeEntry } from '../time-entries/time-entries.schema';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity } from '@nestjs/swagger';
 
 @Controller('/reports')
+@ApiSecurity('x-access-token')
 @ApiBearerAuth()
 export class ReportsController {
     constructor(
