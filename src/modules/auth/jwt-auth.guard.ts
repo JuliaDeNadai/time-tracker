@@ -12,15 +12,27 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate{
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request = context.switchToHttp().getRequest();
+      const accessTokenHeader = request.headers['x-access-token'];
       const { authorization }: any = request.headers;
 
       if(publicRoutes[request.url]?.includes(request.method)) return true
 
-      if (!authorization || authorization.trim() === '') {
+      const rawToken = Array.isArray(accessTokenHeader)
+        ? accessTokenHeader[0]
+        : accessTokenHeader;
+
+      let authToken: string | undefined;
+
+      if (typeof rawToken === 'string' && rawToken.trim() !== '') {
+        authToken = rawToken.trim();
+      } else if (authorization && String(authorization).trim() !== '') {
+        authToken = String(authorization).replace(/bearer/gim, '').trim();
+      }
+
+      if (!authToken) {
         throw new UnauthorizedException('Please provide token');
       }
 
-      const authToken = authorization.replace(/bearer/gim, '').trim();
       const resp = await this.authService.validateToken(authToken);
       request.decodedData = resp;
 
